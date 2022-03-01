@@ -144,6 +144,11 @@ def list_users():
 def users_show(user_id):
     """Show user profile."""
 
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
     user = User.query.get_or_404(user_id)
 
     # snagging messages in order from the database;
@@ -288,6 +293,9 @@ def messages_add():
 def messages_show(message_id):
     """Show a message."""
 
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
     msg = Message.query.get(message_id)
     return render_template('messages/show.html', message=msg)
 
@@ -310,7 +318,11 @@ def messages_destroy(message_id):
 
 @app.route('/users/<int:user_id>/likes')
 def show_likes(user_id):
-        
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+          
     likes = [x.message_id for x in Likes.query.all()]
     user = User.query.get_or_404(user_id)
     return render_template('/users/likes.html', user=user, likes=likes)
